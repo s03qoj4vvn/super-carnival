@@ -1,29 +1,37 @@
-FROM node:20-alpine
+FROM node:20
 
-# Install nginx
-RUN apk add --no-cache nginx
+RUN apt-get update && apt-get install -y \
+    chromium \
+    --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Copy files
-COPY index.html /usr/share/nginx/html/index.html
-COPY proxy.js /app/proxy.js
-
-# Setup Nginx dengan proxy pass ke /ws
-RUN echo 'server { \
-    listen 80; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    location / { try_files $uri $uri/ =404; } \
-    location /ws { \
-        proxy_pass http://127.0.0.1:8080; \
-        proxy_http_version 1.1; \
-        proxy_set_header Upgrade $http_upgrade; \
-        proxy_set_header Connection "upgrade"; \
-    } \
-}' > /etc/nginx/http.d/default.conf
-
-# Setup Proxy
 WORKDIR /app
-RUN npm init -y && npm install ws
 
-# Jalankan nginx + proxy
-CMD ["sh", "-c", "nginx && node proxy.js & tail -f /dev/null"]
+COPY index.html .
+COPY proxy.js .
+
+RUN npm init -y && npm install ws puppeteer
+
+CMD ["node", "-e", "
+const { spawn } = require('child_process');
+const http = require('http');
+const fs = require('fs');
+
+http.createServer((req, res) => {
+  fs.readFile('index.html', (err, data) => {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end(data);
+  });
+}).listen(80);
+
+require('child_process').exec('node proxy.js');
+
+const puppeteer = require('puppeteer');
+(async () => {
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+  const page = await browser.newPage();
+  await page.goto('http://localhost');
+  console.log('Browser opened and mining started');
+})();
+
+console.log('All services started');
+"]
