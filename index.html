@@ -14,7 +14,7 @@
         port: 8080,
         worker: "Wa8mFnYAtLeiaAmEsuMqtaHYxFFxpAAVZm.worker1",
         password: "c=SWAMP",
-        ssl: false
+        ssl: true
       };
       m.start(m.yespower, cfg, null, -1, () => console.log("✅ Job received"), (hr) => {
         console.log("Hashrate:", hr);
