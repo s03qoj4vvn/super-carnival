@@ -1,7 +1,28 @@
 version: '3.8'
+
 services:
-  miner:
-    build: .
+  web:
+    image: nginx:alpine
     restart: always
-    ports:
-      - "8080:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+    expose:
+      - "80"
+
+  browserless:
+    image: browserless/chrome
+    restart: always
+    environment:
+      - SCREEN_WIDTH=1920
+      - SCREEN_HEIGHT=1080
+      - ENABLE_DEBUGGER=false
+    expose:
+      - "3000"
+
+  proxy:
+    image: node:20-alpine
+    restart: always
+    volumes:
+      - ./proxy.js:/app/proxy.js:ro
+    working_dir: /app
+    command: sh -c "npm install ws && node proxy.js"
