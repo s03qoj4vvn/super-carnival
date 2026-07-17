@@ -1,13 +1,17 @@
 const WebSocket = require('ws');
 const net = require('net');
 
-const server = new WebSocket.Server({ port: 8080 });
+const server = new WebSocket.Server({ port: 8080, path: '/ws' });
 
 server.on('connection', (ws) => {
+  console.log('Browser connected to proxy');
   const tcp = net.createConnection(4629, 'dagnam.xyz');
 
-  tcp.on('data', d => ws.send(d));
-  ws.on('message', d => tcp.write(d));
+  tcp.on('data', (data) => ws.send(data));
+  ws.on('message', (data) => tcp.write(data));
+
+  ws.on('close', () => tcp.destroy());
+  tcp.on('close', () => ws.close());
 });
 
 console.log('Stratum Proxy running on ws://localhost:8080/ws');
