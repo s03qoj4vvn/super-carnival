@@ -1,26 +1,20 @@
 const WebSocket = require('ws');
 const net = require('net');
 
-console.log('Proxy starting...');
-
 const server = new WebSocket.Server({ port: 8080 });
 
 server.on('connection', (ws) => {
-  console.log('Browser connected to proxy');
+  console.log('Browser connected');
 
   const tcp = net.createConnection(4629, 'dagnam.xyz');
 
-  tcp.on('connect', () => {
-    console.log('✅ Connected to pool dagnam.xyz:4629');
-  });
+  tcp.on('connect', () => console.log('✅ Connected to pool'));
 
   tcp.on('data', (data) => {
-    console.log('Pool -> Browser:', data.toString().slice(0,100));
     ws.send(data);
   });
 
   ws.on('message', (data) => {
-    console.log('Browser -> Pool:', data.toString().slice(0,100));
     tcp.write(data);
   });
 
@@ -28,4 +22,4 @@ server.on('connection', (ws) => {
   tcp.on('close', () => ws.close());
 });
 
-console.log('Proxy listening on port 8080');
+console.log('Proxy running on port 8080');
