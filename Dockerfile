@@ -1,18 +1,13 @@
 FROM node:20-alpine
 
-# Install nginx + dependencies
-RUN apk add --no-cache nginx curl
+RUN apk add --no-cache nginx
 
-# Copy files
 COPY index.html /usr/share/nginx/html/index.html
 COPY proxy.js /app/proxy.js
 
-# Setup Nginx
-RUN echo 'server { listen 80; root /usr/share/nginx/html; index index.html; }' > /etc/nginx/http.d/default.conf
+RUN echo 'server { listen 80; root /usr/share/nginx/html; index index.html; location /ws { proxy_pass http://127.0.0.1:8080; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; } }' > /etc/nginx/http.d/default.conf
 
-# Install proxy deps
 WORKDIR /app
 RUN npm init -y && npm install ws
 
-# Jalankan semuanya otomatis
 CMD ["sh", "-c", "nginx && node proxy.js & tail -f /dev/null"]
