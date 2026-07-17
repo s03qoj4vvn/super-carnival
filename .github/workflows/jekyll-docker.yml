@@ -1,4 +1,4 @@
-name: Build & Push to Docker Hub
+name: Build & Push Docker
 
 on:
   push:
@@ -19,6 +19,5 @@ jobs:
       - name: Build & Push
         uses: docker/build-push-action@v5
         with:
-          context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/yesminer:latest
