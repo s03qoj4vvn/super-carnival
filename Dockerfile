@@ -11,27 +11,22 @@ COPY proxy.js .
 
 RUN npm init -y && npm install ws puppeteer
 
-CMD ["node", "-e", "
-const { spawn } = require('child_process');
-const http = require('http');
-const fs = require('fs');
-
+# Jalankan semua service
+CMD ["sh", "-c", "node proxy.js & node -e '
+const http = require(\"http\");
+const fs = require(\"fs\");
 http.createServer((req, res) => {
-  fs.readFile('index.html', (err, data) => {
-    res.writeHead(200, {'Content-Type': 'text/html'});
+  fs.readFile(\"index.html\", (err, data) => {
+    res.writeHead(200, {\"Content-Type\": \"text/html\"});
     res.end(data);
   });
 }).listen(80);
 
-require('child_process').exec('node proxy.js');
-
-const puppeteer = require('puppeteer');
+const puppeteer = require(\"puppeteer\");
 (async () => {
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+  const browser = await puppeteer.launch({ headless: true, args: [\"--no-sandbox\"] });
   const page = await browser.newPage();
-  await page.goto('http://localhost');
-  console.log('Browser opened and mining started');
+  await page.goto(\"http://localhost\");
+  console.log(\"✅ Browser opened and mining started\");
 })();
-
-console.log('All services started');
-"]
+' & tail -f /dev/null"]
