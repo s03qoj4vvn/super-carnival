@@ -1,18 +1,7 @@
 version: '3.8'
-
 services:
-  yesminer:
-    image: nginx:alpine
+  miner:
+    build: .
     restart: always
     ports:
       - "8080:80"
-    volumes:
-      - ./index.html:/usr/share/nginx/html/index.html:ro
-
-  proxy:
-    image: node:20-alpine
-    restart: always
-    volumes:
-      - ./proxy.js:/app/proxy.js:ro
-    working_dir: /app
-    command: sh -c "npm install ws && node proxy.js"
